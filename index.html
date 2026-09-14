@@ -33,7 +33,7 @@
   }
   main {
     max-width: 36rem;
-    margin: 0;                       /* column sits at the page edge, Zack-style */
+    margin: 0 0 0 clamp(0rem, 7vw, 6rem);   /* left-justified, but eased off the edge */
     padding: 5rem 1.5rem 6rem 2.5rem;
     position: relative;
   }
@@ -90,7 +90,7 @@
   /* --- theme toggle --- */
   .theme-toggle {
     touch-action: manipulation;
-    position: absolute;
+    position: fixed;         /* centred on the page itself, not the column */
     top: 1.25rem;
     left: 50%;
     transform: translateX(-50%);
