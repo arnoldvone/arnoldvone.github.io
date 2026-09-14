@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arnold von Engelbrechten</title>
+<meta name="description" content="Arnold von Engelbrechten — researcher in international relations theory and political philosophy. London, England.">
+<style>
+  :root {
+    --bg: #ffffff;
+    --ink: #1a1a1a;
+    --muted: #6b6b6b;
+    --link: #0645ad;
+  }
+  html[data-theme="dark"] {
+    --bg: #141413;
+    --ink: #e6e4df;
+    --muted: #9a9a94;
+    --link: #8ab4f8;
+  }
+  * { box-sizing: border-box; }
+  html, body { overflow-x: hidden; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Palatino, "Palatino Linotype", "Book Antiqua", "URW Palladio L", Georgia, serif;
+    font-size: 1.08rem;
+    line-height: 1.65;
+    transition: background 0.35s ease, color 0.35s ease;
+  }
+  main {
+    max-width: 36rem;
+    margin: 0 auto;
+    padding: 5rem 1.25rem 6rem;
+    position: relative;
+  }
+
+  /* --- square + name --- */
+  .mast {
+    display: flex;
+    align-items: center;
+    gap: 0.55em;
+    font-size: clamp(1.1rem, 6.2vw, 1.9rem);
+    font-weight: 400;
+    margin: 0 0 2rem;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+  .square {
+    width: 1.35em;
+    height: 1.35em;
+    flex: none;
+    cursor: pointer;
+    touch-action: manipulation;
+    will-change: transform;
+    filter: blur(0.2px);   /* the nudge: softens the shape's edges */
+  }
+  .shape {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: #4d0a05;   /* set & cycled by script thereafter */
+    will-change: transform;
+    transition: background 0.35s ease;
+  }
+  .name {
+    display: inline-block;
+    clip-path: inset(0 100% 0 0);
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;   /* rapid clicks shouldn't highlight the text */
+  }
+
+  .bio { opacity: 0; transition: opacity 0.6s ease; }
+  .bio.show { opacity: 1; }
+
+  p { margin: 0 0 1.1rem; }
+  a { color: var(--link); text-decoration: underline; text-underline-offset: 2px; }
+  .links { color: var(--muted); margin-top: 2.5rem; }
+
+  /* --- theme toggle --- */
+  .theme-toggle {
+    touch-action: manipulation;
+    position: absolute;
+    top: 1.25rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: var(--muted);
+    line-height: 0;
+  }
+  .theme-toggle:hover { color: var(--ink); }
+  .theme-toggle svg { width: 20px; height: 20px; }
+  .theme-toggle .moon { display: none; }
+  html[data-theme="dark"] .theme-toggle .sun { display: none; }
+  html[data-theme="dark"] .theme-toggle .moon { display: inline; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .name { clip-path: none !important; }
+    .bio { opacity: 1 !important; transition: none; }
+  }
+</style>
+</head>
+<body>
+<main>
+    <button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark mode">
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+        <circle cx="12" cy="12" r="4"/>
+        <line x1="12" y1="2.5" x2="12" y2="5"/>
+        <line x1="12" y1="19" x2="12" y2="21.5"/>
+        <line x1="2.5" y1="12" x2="5" y2="12"/>
+        <line x1="19" y1="12" x2="21.5" y2="12"/>
+        <line x1="5.3" y1="5.3" x2="7" y2="7"/>
+        <line x1="17" y1="17" x2="18.7" y2="18.7"/>
+        <line x1="5.3" y1="18.7" x2="7" y2="17"/>
+        <line x1="17" y1="7" x2="18.7" y2="5.3"/>
+      </svg>
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>
+      </svg>
+    </button>
+
+  <h1 class="mast">
+    <span class="square" id="square" title="click me"><span class="shape" id="shape"></span></span>
+    <span class="name" id="name">Arnold von Engelbrechten</span>
+  </h1>
+
+  <div class="bio" id="bio">
+    <p>I am a researcher working on international relations theory and
+    political philosophy. Currently based in London, England.</p>
+
+    <p class="links">
+      Writing: <a href="https://substack.com/@engelbrechten">substack.com/@engelbrechten</a>
+    </p>
+  </div>
+
+</main>
+
+<script>
+  // ---- experiment controls ----
+  var SLIDE_MS   = 500;   // slide duration (your 0.5s)
+  var LOAD_DELAY = 400;   // ms after page open before it moves
+  var ROLL_DEG   = 90;    // one fold of the square; use 360 for a full spin
+  var ROLL_SPAN  = [0.04, 0.96];  // portion of the journey during which it rolls
+  // -----------------------------
+
+  var square = document.getElementById('square');
+  var shape  = document.getElementById('shape');
+  var name_  = document.getElementById('name');
+  var bio    = document.getElementById('bio');
+  var toggle = document.getElementById('themeToggle');
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var revealed = false;
+  var animating = false;
+  var ease = 'cubic-bezier(0.65, 0, 0.35, 1)';
+
+  // the colour cycle: red -> green -> blue (channel rotations of #4D0A05),
+  // each with a brightened twin for dark mode
+  var COLORS = [
+    { light: '#4d0a05', dark: '#660c07' },   // original red
+    { light: '#054d0a', dark: '#07660c' },   // deep green
+    { light: '#0a054d', dark: '#0d0766' }    // midnight blue
+  ];
+  var colorIndex = 0;
+  function isDark() { return document.documentElement.getAttribute('data-theme') === 'dark'; }
+  function cval(i) { return isDark() ? COLORS[i].dark : COLORS[i].light; }
+
+  // --- theme toggle ---
+  try {
+    if (localStorage.getItem('theme') === 'dark')
+      document.documentElement.setAttribute('data-theme', 'dark');
+  } catch (e) {}
+  toggle.addEventListener('click', function () {
+    var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    if (dark) document.documentElement.removeAttribute('data-theme');
+    else document.documentElement.setAttribute('data-theme', 'dark');
+    try { localStorage.setItem('theme', dark ? 'light' : 'dark'); } catch (e) {}
+    shape.style.backgroundColor = cval(colorIndex);  // re-pick the theme's variant
+  });
+
+  // --- slide + reveal + roll ---
+  function go(toRevealed, advanceColor) {
+    if (animating) return;
+    if (reduced) { bio.classList.add('show'); return; }
+    animating = true;
+    var gap = parseFloat(getComputedStyle(name_.parentElement).gap) || 12;
+    var W = square.offsetWidth, N = name_.offsetWidth;
+    var d = N + gap * 2 + W;
+    var sqFrom = toRevealed ? 'translateX(0)' : 'translateX(' + d + 'px)';
+    var sqTo   = toRevealed ? 'translateX(' + d + 'px)' : 'translateX(0)';
+
+    // hue shift in motion: fade to the next colour across the whole slide
+    if (advanceColor) {
+      var from = cval(colorIndex);
+      colorIndex = (colorIndex + 1) % COLORS.length;
+      var to = cval(colorIndex);
+      shape.style.backgroundColor = to;   // final value once the animation ends
+      shape.animate(
+        [{ backgroundColor: from }, { backgroundColor: to }],
+        { duration: SLIDE_MS, easing: ease }
+      );
+    }
+
+    // the roll: one fold in the direction of travel, mid-journey
+    var a0 = toRevealed ? 0 : ROLL_DEG;
+    var a1 = toRevealed ? ROLL_DEG : 0;
+    shape.animate(
+      [
+        { transform: 'rotate(' + a0 + 'deg)', offset: 0 },
+        { transform: 'rotate(' + a0 + 'deg)', offset: ROLL_SPAN[0] },
+        { transform: 'rotate(' + a1 + 'deg)', offset: ROLL_SPAN[1] },
+        { transform: 'rotate(' + a1 + 'deg)', offset: 1 }
+      ],
+      { duration: SLIDE_MS, easing: ease, fill: 'forwards' }
+    );
+
+    // clip edge pinned to the shape's real position (idles while crossing the gap)
+    var p0 = (W + gap) / d;
+    var p1 = (W + gap + N) / d;
+    var frames = toRevealed
+      ? [
+          { clipPath: 'inset(0 100% 0 0)', offset: 0 },
+          { clipPath: 'inset(0 100% 0 0)', offset: p0 },
+          { clipPath: 'inset(0 0% 0 0)',   offset: p1 },
+          { clipPath: 'inset(0 0% 0 0)',   offset: 1 }
+        ]
+      : [
+          { clipPath: 'inset(0 0% 0 0)',   offset: 0 },
+          { clipPath: 'inset(0 0% 0 0)',   offset: 1 - p1 },
+          { clipPath: 'inset(0 100% 0 0)', offset: 1 - p0 },
+          { clipPath: 'inset(0 100% 0 0)', offset: 1 }
+        ];
+
+    square.animate(
+      [{ transform: sqFrom }, { transform: sqTo }],
+      { duration: SLIDE_MS, easing: ease, fill: 'forwards' }
+    );
+    name_.animate(
+      frames,
+      { duration: SLIDE_MS, easing: ease, fill: 'forwards' }
+    ).onfinish = function () {
+      revealed = toRevealed;
+      if (revealed) bio.classList.add('show');
+      animating = false;
+    };
+  }
+
+  shape.style.backgroundColor = cval(0);
+
+  window.addEventListener('load', function () {
+    setTimeout(function () { go(true, false); }, LOAD_DELAY);   // opening slide keeps red
+  });
+  square.addEventListener('click', function () { go(!revealed, true); });
+  name_.addEventListener('click', function () { go(!revealed, true); });
+</script>
+</body>
+</html>
