@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Arnold von Engelbrechten</title>
 <meta name="description" content="Arnold von Engelbrechten — researcher in international relations theory and political philosophy. London, England.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%234d0a05'/%3E%3C/svg%3E">
 <style>
   :root {
     --bg: #ffffff;
@@ -32,26 +33,31 @@
   }
   main {
     max-width: 36rem;
-    margin: 0 auto;
-    padding: 5rem 1.25rem 6rem;
+    margin: 0;                       /* column sits at the page edge, Zack-style */
+    padding: 5rem 1.5rem 6rem 2.5rem;
     position: relative;
+  }
+  @media (max-width: 480px) {
+    main { padding-left: 1.25rem; padding-right: 1.25rem; }
   }
 
   /* --- square + name --- */
   .mast {
-    display: flex;
-    align-items: center;
-    gap: 0.55em;
-    font-size: clamp(1.1rem, 6.2vw, 1.9rem);
+    position: relative;
+    font-size: clamp(0.95rem, 5.4vw, 1.82rem);
     font-weight: 400;
     margin: 0 0 2rem;
     line-height: 1.2;
     white-space: nowrap;
   }
   .square {
+    position: absolute;    /* home base: on top of the name's first letters */
+    left: 0;
+    top: 50%;
+    margin-top: -0.675em;  /* vertically centred without using transform */
     width: 1.35em;
     height: 1.35em;
-    flex: none;
+    z-index: 1;
     cursor: pointer;
     touch-action: manipulation;
     will-change: transform;
@@ -136,7 +142,7 @@
     political philosophy. Currently based in London, England.</p>
 
     <p class="links">
-      Writing: <a href="https://substack.com/@engelbrechten">substack.com/@engelbrechten</a>
+      Writing: <a href="https://substack.com/@engelbrechten">@engelbrechten</a>
     </p>
   </div>
 
@@ -189,9 +195,12 @@
     if (animating) return;
     if (reduced) { bio.classList.add('show'); return; }
     animating = true;
-    var gap = parseFloat(getComputedStyle(name_.parentElement).gap) || 12;
+    var mastFont = parseFloat(getComputedStyle(name_.parentElement).fontSize) || 24;
+    var gap = 0.55 * mastFont;
     var W = square.offsetWidth, N = name_.offsetWidth;
-    var d = N + gap * 2 + W;
+    var d = N + gap;                                  // rest just past the name
+    var maxD = name_.parentElement.clientWidth - W;   // keep it on screen
+    if (maxD > 0 && d > maxD) d = maxD;
     var sqFrom = toRevealed ? 'translateX(0)' : 'translateX(' + d + 'px)';
     var sqTo   = toRevealed ? 'translateX(' + d + 'px)' : 'translateX(0)';
 
@@ -220,20 +229,19 @@
       { duration: SLIDE_MS, easing: ease, fill: 'forwards' }
     );
 
-    // clip edge pinned to the shape's real position (idles while crossing the gap)
-    var p0 = (W + gap) / d;
-    var p1 = (W + gap + N) / d;
+    // clip edge pinned to the shape's real position: the reveal tracks the
+    // square from the first instant (it starts on the text's left edge) and
+    // completes once the square's trailing edge clears the name
+    var p1 = Math.min(1, N / d);
     var frames = toRevealed
       ? [
           { clipPath: 'inset(0 100% 0 0)', offset: 0 },
-          { clipPath: 'inset(0 100% 0 0)', offset: p0 },
           { clipPath: 'inset(0 0% 0 0)',   offset: p1 },
           { clipPath: 'inset(0 0% 0 0)',   offset: 1 }
         ]
       : [
           { clipPath: 'inset(0 0% 0 0)',   offset: 0 },
           { clipPath: 'inset(0 0% 0 0)',   offset: 1 - p1 },
-          { clipPath: 'inset(0 100% 0 0)', offset: 1 - p0 },
           { clipPath: 'inset(0 100% 0 0)', offset: 1 }
         ];
 
