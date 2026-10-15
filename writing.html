@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Writing · Arnold von Engelbrechten</title>
+<meta name="description" content="Essays and writing by Arnold von Engelbrechten — international relations theory, political philosophy, and strategy.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%234d0a05'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #ffffff;
+    --ink: #1a1a1a;
+    --muted: #6b6b6b;
+    --link: #0645ad;
+    --maroon: #4d0a05;
+  }
+  html[data-theme="dark"] {
+    --bg: #141413;
+    --ink: #e6e4df;
+    --muted: #9a9a94;
+    --link: #8ab4f8;
+    --maroon: #660c07;
+  }
+  * { box-sizing: border-box; }
+  html, body { overflow-x: hidden; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Palatino, "Palatino Linotype", "Book Antiqua", "URW Palladio L", Georgia, serif;
+    font-size: 1.08rem;
+    line-height: 1.65;
+    transition: background 0.35s ease, color 0.35s ease;
+  }
+  main {
+    max-width: 36rem;
+    margin: 0 0 0 clamp(0rem, 7vw, 6rem);   /* same rail as the home page */
+    padding: 5rem 1.5rem 6rem 2.5rem;
+    position: relative;
+  }
+  @media (max-width: 480px) {
+    main { padding-left: 1.25rem; padding-right: 1.25rem; }
+  }
+
+  /* --- masthead: the square walks you home --- */
+  .mast {
+    display: flex;
+    align-items: center;
+    gap: 0.55em;
+    font-size: clamp(0.95rem, 5.4vw, 1.82rem);
+    font-weight: 400;
+    margin: 0 0 0.5rem;
+    line-height: 1.2;
+  }
+  .square {
+    width: 1.35em;
+    height: 1.35em;
+    background: var(--maroon);
+    flex: none;
+    filter: blur(0.2px);
+    transition: background 0.35s ease, transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  a.home { text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 0.55em; }
+  a.home:hover .square { transform: rotate(90deg); }
+
+  .sub {
+    color: var(--muted);
+    margin: 0 0 3rem;
+  }
+
+  /* --- the archive list --- */
+  ul.posts {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  ul.posts li {
+    margin: 0 0 1.9rem;
+  }
+  .post-date {
+    display: block;
+    color: var(--muted);
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.1rem;
+  }
+  .post-title {
+    font-size: 1.15rem;
+  }
+  .post-note {
+    display: block;
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-top: 0.15rem;
+  }
+
+  a { color: var(--link); text-decoration: underline; text-underline-offset: 2px; }
+
+  /* --- theme toggle (same as home) --- */
+  .theme-toggle {
+    touch-action: manipulation;
+    position: fixed;
+    top: 1.25rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: var(--muted);
+    line-height: 0;
+  }
+  .theme-toggle:hover { color: var(--ink); }
+  .theme-toggle svg { width: 20px; height: 20px; }
+  .theme-toggle .moon { display: none; }
+  html[data-theme="dark"] .theme-toggle .sun { display: none; }
+  html[data-theme="dark"] .theme-toggle .moon { display: inline; }
+</style>
+</head>
+<body>
+<main>
+  <button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark mode">
+    <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+      <circle cx="12" cy="12" r="4"/>
+      <line x1="12" y1="2.5" x2="12" y2="5"/>
+      <line x1="12" y1="19" x2="12" y2="21.5"/>
+      <line x1="2.5" y1="12" x2="5" y2="12"/>
+      <line x1="19" y1="12" x2="21.5" y2="12"/>
+      <line x1="5.3" y1="5.3" x2="7" y2="7"/>
+      <line x1="17" y1="17" x2="18.7" y2="18.7"/>
+      <line x1="5.3" y1="18.7" x2="7" y2="17"/>
+      <line x1="17" y1="7" x2="18.7" y2="5.3"/>
+    </svg>
+    <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>
+    </svg>
+  </button>
+
+  <h1 class="mast">
+    <a class="home" href="/" title="Home"><span class="square"></span></a>
+    <span>Writing</span>
+  </h1>
+  <p class="sub">Essays on international relations, political philosophy, and strategy.</p>
+
+  <!-- ============================================================
+       THE ARCHIVE.
+       To add a post, copy one <li> block, paste it at the TOP of the
+       list, and edit the three lines: date, link+title, note.
+       Delete the note line if a post doesn't need one.
+       ============================================================ -->
+  <ul class="posts">
+
+    <li>
+      <span class="post-date">17 September 2026</span>
+      <span class="post-title"><a href="https://arnoldve.substack.com/p/american-drone-policy-is-still-unethical">American drone policy is still immoral.</a></span>
+      <span class="post-note">Drones promised to make war more ethical. In practice, they have done the opposite.</span>
+    </li>
+
+    <li>
+      <span class="post-date">10 September 2026</span>
+      <span class="post-title"><a href="https://arnoldve.substack.com/p/robert-kaplan-is-wrong-about-the">China and America will not fight over the South China Sea.</a></span>
+      <span class="post-note">In the impending Sino-American superpower showdown, Taiwan is the much more likely source of conflict.</span>
+    </li>
+
+  </ul>
+</main>
+
+<script>
+  // shared theme memory with the home page
+  try {
+    if (localStorage.getItem('theme') === 'dark')
+      document.documentElement.setAttribute('data-theme', 'dark');
+  } catch (e) {}
+  document.getElementById('themeToggle').addEventListener('click', function () {
+    var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    if (dark) document.documentElement.removeAttribute('data-theme');
+    else document.documentElement.setAttribute('data-theme', 'dark');
+    try { localStorage.setItem('theme', dark ? 'light' : 'dark'); } catch (e) {}
+  });
+</script>
+</body>
+</html>
